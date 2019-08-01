@@ -9,7 +9,6 @@ return [
     false, // $matchHost
     [ // $staticRoutes
         '/api/Partenaire/inserer' => [[['_route' => 'inserer_un_partenaire', '_controller' => 'App\\Controller\\UtilisateurController::Ajouter_Partenaire'], null, ['POST' => 0], null, false, false, null]],
-        '/api/Utilisateur/inserer' => [[['_route' => 'inserer_un_utilisateur_partenaire ', '_controller' => 'App\\Controller\\UtilisateurController::Ajouter_Utilisateur'], null, ['POST' => 0], null, false, false, null]],
         '/api/login' => [[['_route' => 'login', '_controller' => 'App\\Controller\\UtilisateurController::login'], null, ['POST' => 0], null, false, false, null]],
     ],
     [ // $regexpList

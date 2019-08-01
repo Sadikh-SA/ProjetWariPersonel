@@ -37,16 +37,18 @@ class UtilisateurController extends AbstractController
                 $user->setRoles(['ROLE_Super-Admin']);
             }elseif ($user->getProfil()=="Admin-Partenaire") {
                 $user->setRoles(['ROLE_Admin-Partenaire']);
-                if ($values->ninea!=NULL) {
+                if (!isset($values->ninea)) {
+                    $idpartenaire=$user->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
+                    var_dump($idpartenaire);
+                    $user->setIdPartenaire($idpartenaire->getId());
+                } else {
                     $partenaire = new Partenaire();
                     $partenaire->setNinea($values->ninea);
                     $partenaire->setLocalisation($values->localisation);
                     $partenaire->setDomaineDActivite($values->domaine);
+                    $entityManager->persist($partenaire);
                     $user->setIdPartenaire($partenaire);
-                } else {
-                    $idpartenaire=$user->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
-                    $user->setIdPartenaire($idpartenaire->getId());
-                }
+                }   
             }elseif($user->getProfil()=="Utilisateur") {
                 $idpartenaire=$user->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
                 $user->setIdPartenaire($idpartenaire->getId());
