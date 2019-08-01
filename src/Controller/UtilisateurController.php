@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,19 +24,19 @@ class UtilisateurController extends AbstractController
     public function Ajouter_Partenaire_Utilisateur(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
     {
         $values = json_decode($request->getContent());
-        if(isset($values->username,$values->password)) {
+        if(isset($values->username,$values->password,$values->prenom,$values->nom,$values->tel,$values->adresse,$values->profil,$values->photo)) {
             $user = new Utilisateur();
-            $user->setEmail($values->username);
-            $user->setPassword($passwordEncoder->encodePassword($user, $values->password));
-            $user->setPrenom($values->prenom);
-            $user->setNom($values->nom);
-            $user->setTel($values->tel);
-            $user->setAdresse($values->adresse);
-            $user->setProfil($values->profil);
-            $user->setPhoto($values->photo);
-            if ($user->getProfil()=="Super-Admin") {
+            $user->setEmail(trim($values->username));
+            $user->setPassword($passwordEncoder->encodePassword($user, trim($values->password)));
+            $user->setPrenom(trim($values->prenom));
+            $user->setNom(trim($values->nom));
+            $user->setTel(trim($values->tel));
+            $user->setAdresse(trim($values->adresse));
+            $user->setProfil(trim($values->profil));
+            $user->setPhoto(trim($values->photo));
+            if (strtolower($user->getProfil())==strtolower("Super-Admin")) {
                 $user->setRoles(['ROLE_Super-Admin']);
-            }elseif ($user->getProfil()=="Admin-Partenaire") {
+            }elseif (strtolower($user->getProfil())==strtolower("Admin-Partenaire")) {
                 $user->setRoles(['ROLE_Admin-Partenaire']);
                 if (!isset($values->ninea)) {
                     $idpartenaire=$user->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
@@ -43,13 +44,13 @@ class UtilisateurController extends AbstractController
                 } else {
                     $partenaire = new Partenaire();
                     $partenaire->setNinea($values->ninea);
-                    $partenaire->setLocalisation($values->localisation);
-                    $partenaire->setDomaineDActivite($values->domaine);
+                    $partenaire->setLocalisation(trim($values->localisation));
+                    $partenaire->setDomaineDActivite(trim($values->domaine));
                     $entityManager->persist($partenaire);
                     $user->setIdPartenaire($partenaire);
                 }   
             }
-            elseif($user->getProfil()=="Utilisateur" || $user->getProfil()=="Caissier") {
+            elseif(strtolower($user->getProfil())==strtolower("Utilisateur") || strtolower($user->getProfil())==strtolower("Caissier")) {
                 $idpartenaire=$user->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
                 $user->setIdPartenaire($idpartenaire->getIdPartenaire());
                 if ($user->getProfil()=="Caissier") {
@@ -84,9 +85,9 @@ class UtilisateurController extends AbstractController
         return new JsonResponse($data, 500);
     }
 
-
     /**
      * @Route("/utilisateur/status/{id}", name="update_status", methods={"PUT"})
+     * isGranted({"ROLE_Super-Admin", "ROLE_Admin-Partenaire"})
      */
     public function update_Status(Request $request, Utilisateur $user, EntityManagerInterface $entityManager)
     {
@@ -113,6 +114,7 @@ class UtilisateurController extends AbstractController
 
     /**
      * @Route("/utilisateur/compte/{id}", name="update_compte", methods={"PUT"})
+     * @IsGranted({"ROLE_Super-Admin", "ROLE_Admin-Partenaire"})
      */
     public function update_Compte(Request $request, Utilisateur $user, EntityManagerInterface $entityManager)
     {
@@ -131,7 +133,7 @@ class UtilisateurController extends AbstractController
                 $entityManager->flush();
                 $data = [
                     'status12' => 200,
-                    'message12' => 'Le Compte de travail de cet utilisateur a bien été mis à jour'
+                    'message12' => 'Ce Compte de travail a bien été mis à jour'
                 ];
                 return new JsonResponse($data,200);
             } else {
@@ -141,13 +143,8 @@ class UtilisateurController extends AbstractController
                 ];
                 return new JsonResponse($data,500);
             }
-            
-            
         }
-
     }
-
-
 
     /**
      * @Route("/login", name="login", methods={"POST"})

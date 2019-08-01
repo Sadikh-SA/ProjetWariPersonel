@@ -14,7 +14,7 @@ use App\Entity\Depot;
 use App\Entity\Utilisateur;
 
 /**
- * @Route("/api"    )
+ * @Route("/api")
  */
 
 class CompteDepotController extends AbstractController
@@ -27,9 +27,9 @@ class CompteDepotController extends AbstractController
         $values = json_decode($request->getContent());
         if(isset($values->numeroCompte,$values->codeBank, $values->nomBeneficiaire)) {
                 $compte = new Compte();
-                $compte->setNomBeneficiaire($values->nomBeneficiaire)
+                $compte->setNomBeneficiaire(trim($values->nomBeneficiaire))
                        ->setCodeBank($values->codeBank)
-                       ->setNumeroCompte($values->numeroCompte)
+                       ->setNumeroCompte(trim($values->numeroCompte))
                        ->setMontant(0);
                 $idpartenaire=$compte->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
                 $compte->setIdPartenaire($idpartenaire->getIdPartenaire());

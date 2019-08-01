@@ -2493,16 +2493,44 @@
     </service>
     <service id="security.access_map" class="Symfony\Component\Security\Http\AccessMap" public="false">
       <call method="add">
-        <argument type="service" id=".security.request_matcher.Ud1TEPV"/>
+        <argument type="service" id=".security.request_matcher.Yix_wkt"/>
         <argument type="collection">
-          <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+          <argument>ROLE_Super-Admin</argument>
         </argument>
         <argument>null</argument>
       </call>
       <call method="add">
-        <argument type="service" id=".security.request_matcher.cRNYaJ1"/>
+        <argument type="service" id=".security.request_matcher.Yix_wkt"/>
         <argument type="collection">
-          <argument>IS_AUTHENTICATED_FULLY</argument>
+          <argument>ROLE_Admin-Partenaire</argument>
+        </argument>
+        <argument>null</argument>
+      </call>
+      <call method="add">
+        <argument type="service" id=".security.request_matcher.5fAXuJY"/>
+        <argument type="collection">
+          <argument>ROLE_Caissier</argument>
+        </argument>
+        <argument>null</argument>
+      </call>
+      <call method="add">
+        <argument type="service" id=".security.request_matcher.BYebQcK"/>
+        <argument type="collection">
+          <argument>ROLE_Super-Admin</argument>
+        </argument>
+        <argument>null</argument>
+      </call>
+      <call method="add">
+        <argument type="service" id=".security.request_matcher.3pVYPLR"/>
+        <argument type="collection">
+          <argument>ROLE_Admin-Partenaire</argument>
+        </argument>
+        <argument>null</argument>
+      </call>
+      <call method="add">
+        <argument type="service" id=".security.request_matcher.sDzEDr_"/>
+        <argument type="collection">
+          <argument>ROLE_Admin-Partenaire</argument>
         </argument>
         <argument>null</argument>
       </call>
@@ -3002,11 +3030,20 @@
         <argument key="security.firewall.map.context.login" type="service" id="security.firewall.map.context.login"/>
       </argument>
     </service>
-    <service id=".security.request_matcher.Ud1TEPV" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/api/login</argument>
+    <service id=".security.request_matcher.Yix_wkt" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+      <argument>^/api/Partenaire/Utilisateur/inserer</argument>
     </service>
-    <service id=".security.request_matcher.cRNYaJ1" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/api</argument>
+    <service id=".security.request_matcher.5fAXuJY" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+      <argument>^/api/depot/compte/partenaire/inserer"</argument>
+    </service>
+    <service id=".security.request_matcher.BYebQcK" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+      <argument>^/api/compte/partenaire/inserer</argument>
+    </service>
+    <service id=".security.request_matcher.3pVYPLR" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+      <argument>^/api/utilisateur/inserer</argument>
+    </service>
+    <service id=".security.request_matcher.sDzEDr_" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+      <argument>^/api/depot/inserer</argument>
     </service>
     <service id="security.command.user_password_encoder" class="Symfony\Bundle\SecurityBundle\Command\UserPasswordEncoderCommand" public="false">
       <tag name="console.command" command="security:encode-password"/>

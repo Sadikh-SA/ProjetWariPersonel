@@ -45,5 +45,11 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        # - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/Partenaire/Utilisateur/inserer, roles: ROLE_Super-Admin }
+        - { path: ^/api/Partenaire/Utilisateur/inserer, roles: ROLE_Admin-Partenaire}
+        - { path: ^/api/depot/compte/partenaire/inserer", roles: ROLE_Caissier }
+        - { path: ^/api/compte/partenaire/inserer, roles: ROLE_Super-Admin }
+        - { path: ^/api/utilisateur/inserer, roles: ROLE_Admin-Partenaire }
+        - { path: ^/api/depot/inserer, roles: ROLE_Admin-Partenaire }
