@@ -13,12 +13,13 @@ include_once $this->targetDirs[3].'/vendor/symfony/http-foundation/RequestMatche
 
 $this->privates['security.access_map'] = $instance = new \Symfony\Component\Security\Http\AccessMap();
 
-$a = new \Symfony\Component\HttpFoundation\RequestMatcher('^/api/utilisateur/inserer');
+$a = new \Symfony\Component\HttpFoundation\RequestMatcher('^/api/Partenaire/Utilisateur/inserer');
 
 $instance->add($a, [0 => 'ROLE_Super-Admin'], NULL);
+$instance->add($a, [0 => 'ROLE_Admin-Partenaire'], NULL);
 $instance->add(new \Symfony\Component\HttpFoundation\RequestMatcher('^/api/depot/compte/partenaire/inserer"'), [0 => 'ROLE_Caissier'], NULL);
 $instance->add(new \Symfony\Component\HttpFoundation\RequestMatcher('^/api/compte/partenaire/inserer'), [0 => 'ROLE_Super-Admin'], NULL);
-$instance->add($a, [0 => 'ROLE_Admin-Partenaire'], NULL);
+$instance->add(new \Symfony\Component\HttpFoundation\RequestMatcher('^/api/utilisateur/inserer'), [0 => 'ROLE_Admin-Partenaire'], NULL);
 $instance->add(new \Symfony\Component\HttpFoundation\RequestMatcher('^/api/depot/inserer'), [0 => 'ROLE_Admin-Partenaire'], NULL);
 
 return $instance;

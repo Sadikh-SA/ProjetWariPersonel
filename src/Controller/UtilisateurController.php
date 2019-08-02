@@ -50,12 +50,29 @@ class UtilisateurController extends AbstractController
                         return new JsonResponse($data, 305);
                     }
                 } else {
-                    $partenaire = new Partenaire();
-                    $partenaire->setNinea($values->ninea);
-                    $partenaire->setLocalisation(trim($values->localisation));
-                    $partenaire->setDomaineDActivite(trim($values->domaine));
-                    $entityManager->persist($partenaire);
-                    $user->setIdPartenaire($partenaire);
+                        $partenaire = new Partenaire();
+                        $partenaire->setNinea($values->ninea);
+                        $partenaire->setLocalisation(trim($values->localisation));
+                        $partenaire->setDomaineDActivite(trim($values->domaine));
+                        $entityManager->persist($partenaire);
+                        $user->setIdPartenaire($partenaire);
+                        if (isset($values->codeBank) && strlen($values->codeBank)==6 && is_numeric($values->codeBank)) {
+                            $compte = new Compte();
+                            $compte->setCodeBank($values->codeBank);
+                            $compte->setNumeroCompte("SA".rand(100000000,99999999)."A19");
+                            $compte->setNomBeneficiaire(trim($values->prenom)." ".trim($values->nom));
+                            $compte->setMontant(0);
+                            $compte->setIdPartenaire($partenaire);
+                            $entityManager->persist($compte);
+                            $user->setIdCompte($compte);
+                        }
+                        else {
+                            $data = [
+                                'status16' => 700,
+                                'message16' => 'Vous n\'avez pas renseigné le code Bank ou bien ce code doit être numérique et 6 chiffre' 
+                            ];
+                            return new JsonResponse($data, 700);
+                        }
                 }   
             }
             elseif(strtolower($user->getProfil())==strtolower("Utilisateur") || strtolower($user->getProfil())==strtolower("Caissier")) {
