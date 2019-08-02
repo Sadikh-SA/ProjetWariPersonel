@@ -40,7 +40,15 @@ class UtilisateurController extends AbstractController
                 $user->setRoles(['ROLE_Admin-Partenaire']);
                 if (!isset($values->ninea)) {
                     $idpartenaire=$user->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
-                    $user->setIdPartenaire($idpartenaire->getIdPartenaire());
+                    if ($idpartenaire->getIdPartenaire()!=NULL) {
+                        $user->setIdPartenaire($idpartenaire->getIdPartenaire());
+                    } else {
+                        $data = [
+                            'status15' => 305,
+                            'message15' => 'Ce Partenaire n\'existe pas'
+                        ];
+                        return new JsonResponse($data, 305);
+                    }
                 } else {
                     $partenaire = new Partenaire();
                     $partenaire->setNinea($values->ninea);
@@ -52,7 +60,17 @@ class UtilisateurController extends AbstractController
             }
             elseif(strtolower($user->getProfil())==strtolower("Utilisateur") || strtolower($user->getProfil())==strtolower("Caissier")) {
                 $idpartenaire=$user->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
-                $user->setIdPartenaire($idpartenaire->getIdPartenaire());
+                if ($idpartenaire->getIdPartenaire()!=NULL) {
+                    $user->setIdPartenaire($idpartenaire->getIdPartenaire());
+                } else {
+                    $data = [
+                        'status15' => 305,
+                        'message15' => 'Ce Partenaire n\'existe pas'
+                    ];
+                    return new JsonResponse($data, 305);
+                }
+                
+                
                 if ($user->getProfil()=="Caissier") {
                     $user->setRoles(['ROLE_Caissier']);
                 } else {
