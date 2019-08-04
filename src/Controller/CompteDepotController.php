@@ -25,11 +25,11 @@ class CompteDepotController extends AbstractController
     public function register(Request $request, EntityManagerInterface $entityManager)
     {
         $values = json_decode($request->getContent());
-        if(isset($values->numeroCompte,$values->codeBank, $values->nomBeneficiaire)) {
+        if(isset($values->codeBank, $values->nomBeneficiaire)) {
                 $compte = new Compte();
                 $compte->setNomBeneficiaire(trim($values->nomBeneficiaire))
                        ->setCodeBank($values->codeBank)
-                       ->setNumeroCompte(trim($values->numeroCompte))
+                       ->setNumeroCompte(trim("SA".rand(10000000,99999999)."A19"))
                        ->setMontant(0);
                 $idpartenaire=$compte->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
                 $compte->setIdPartenaire($idpartenaire->getIdPartenaire());
