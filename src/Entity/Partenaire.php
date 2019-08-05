@@ -6,10 +6,13 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
+ * @UniqueEntity(fields={"ninea"}, message="Cette Entreprise existe déja dans la base: ninéa dupliquer.")
  */
 class Partenaire
 {
@@ -21,7 +24,7 @@ class Partenaire
     private $id;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", unique=true)
      */
     private $ninea;
 

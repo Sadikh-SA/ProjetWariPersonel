@@ -14,11 +14,12 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
                 'App\\Repository\\UtilisateurRepository',
             ],
             'message' => [
-                1 => 'Cet utilisateur existe déjà',
+                1 => 'Cet utilisateur ou se numéro de téléphone existe déjà',
             ],
             'fields' => [
                 1 => [
                     'email',
+                    'tel',
                 ],
             ],
             'groups' => [

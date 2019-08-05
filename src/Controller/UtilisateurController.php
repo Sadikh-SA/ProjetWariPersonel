@@ -47,14 +47,13 @@ class UtilisateurController extends AbstractController
             $user->setAdresse(trim($values->adresse));
             $user->setProfil(trim(ucfirst(strtolower($values->profil))));
             $user->setPhoto(trim($values->photo));
-            if (isset($values->idPartenaire) && isset($values->idCompte)) {
-                $idpartenaire=$this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire);
+            if (isset($values->idCompte)) {
                 $idcompte=$this->getDoctrine()->getRepository(Compte::class)->find($values->idCompte);
             }
-            if (strtolower($user->getProfil())==strtolower("Admin-Partenaire") && !isset($values->ninea) && $idpartenaire!=NULL && $idcompte!=NULL) {
+            if (strtolower($user->getProfil())==strtolower("Admin-Partenaire") && !isset($values->ninea) && $idcompte!=NULL) {
                 $user->setRoles(['ROLE_Admin-Partenaire']);
-                $user->setIdPartenaire($idpartenaire);
-                $user->setIdCompte($idcompte->getIdCompte());
+                $user->setIdCompte($idcompte);
+                $user->setIdPartenaire($idcompte->getIdPartenaire());
             }elseif (strtolower($user->getProfil())==strtolower("Admin-Partenaire") && isset($values->ninea) && isset($values->codeBank) && strlen($values->codeBank)==6 && is_numeric($values->codeBank)) {
                 $user->setRoles(['ROLE_Admin-Partenaire']);
                 $partenaire = new Partenaire();
@@ -72,9 +71,8 @@ class UtilisateurController extends AbstractController
                 $entityManager->persist($compte);
                 $user->setIdCompte($compte);      
             }
-            elseif(strtolower($user->getProfil())==strtolower("Utilisateur") || strtolower($user->getProfil())==strtolower("Caissier") && $idpartenaire!=NULL) {
-                $idpartenaire=$user->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
-                $user->setIdPartenaire($idpartenaire->getIdPartenaire());
+            elseif(strtolower($user->getProfil())==strtolower("Utilisateur") || strtolower($user->getProfil())==strtolower("Caissier") && $idcompte!=NULL) {
+                $user->setIdPartenaire($idcompte->getIdPartenaire());
                 $user->setIdCompte($idcompte);
                 if ($user->getProfil()=="Caissier") {
                     $user->setRoles(['ROLE_Caissier']);

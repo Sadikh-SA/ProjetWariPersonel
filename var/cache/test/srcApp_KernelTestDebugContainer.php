@@ -16,6 +16,6 @@ if (!\class_exists(srcApp_KernelTestDebugContainer::class, false)) {
 
 return new \Container1CTvAOK\srcApp_KernelTestDebugContainer([
     'container.build_hash' => '1CTvAOK',
-    'container.build_id' => 'e988599e',
-    'container.build_time' => 1564997326,
+    'container.build_id' => 'f8fad473',
+    'container.build_time' => 1565018830,
 ], __DIR__.\DIRECTORY_SEPARATOR.'Container1CTvAOK');

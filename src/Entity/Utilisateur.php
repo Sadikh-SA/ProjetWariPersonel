@@ -7,11 +7,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UtilisateurRepository")
- * @UniqueEntity(fields={"email"}, message="Cet utilisateur existe déjà")
+ * @UniqueEntity(fields={"email", "tel"}, message="Cet utilisateur ou se numéro de téléphone existe déjà")
  */
 class Utilisateur implements UserInterface
 {
@@ -69,7 +70,7 @@ class Utilisateur implements UserInterface
     private $photo;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $tel;
 

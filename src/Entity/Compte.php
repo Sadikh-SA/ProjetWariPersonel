@@ -6,10 +6,14 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\CompteRepository")
+ * @UniqueEntity(fields={"numeroCompte"}, message="Ce numéro de compte existe déja.")
  */
 class Compte
 {
@@ -21,7 +25,7 @@ class Compte
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $numeroCompte;
 
