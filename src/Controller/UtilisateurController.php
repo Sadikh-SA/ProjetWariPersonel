@@ -47,14 +47,16 @@ class UtilisateurController extends AbstractController
             $user->setAdresse(trim($values->adresse));
             $user->setProfil(trim(ucfirst(strtolower($values->profil))));
             $user->setPhoto(trim($values->photo));
-            $idpartenaire=$user->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
+            if (isset($values->idPartenaire)) {
+                $idpartenaire=$this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire);
+            }
             if (strtolower($user->getProfil())==strtolower("Admin-Partenaire") && !isset($values->ninea) && $idpartenaire->getIdPartenaire()!=NULL) {
                 $user->setRoles(['ROLE_Admin-Partenaire']);
                 $user->setIdPartenaire($idpartenaire->getIdPartenaire());
             }elseif (strtolower($user->getProfil())==strtolower("Admin-Partenaire") && isset($values->ninea) && isset($values->codeBank) && strlen($values->codeBank)==6 && is_numeric($values->codeBank)) {
                 $user->setRoles(['ROLE_Admin-Partenaire']);
                 $partenaire = new Partenaire();
-                $partenaire->setNinea($values->ninea);
+                $partenaire->setNinea($values->ninea);;
                 $partenaire->setLocalisation(trim($values->localisation));
                 $partenaire->setDomaineDActivite(trim($values->domaine));
                 $entityManager->persist($partenaire);
