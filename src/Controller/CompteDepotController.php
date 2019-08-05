@@ -60,7 +60,6 @@ class CompteDepotController extends AbstractController
     }
 
 
-
     /**
      * @Route("/depot/compte/partenaire/inserer", name="depot_argent_compte_partenaire", methods={"POST"})
      */
@@ -68,19 +67,19 @@ class CompteDepotController extends AbstractController
     {
        $values = json_decode($request->getContent());
        $errors=[];
-        if (isset($values->Compte,$values->Caissier,$values->montant)) {
+        if (isset($values->Compte,$values->montant)) {
             if ($values->montant>=75000 && is_numeric($values->montant)) {
                 $depot = new Depot();
                 $depot ->setDateDeDepot(new \DateTime())
                        ->setMontantDuDepot($values->montant);
-                    $idcompte=$this->getDoctrine()->getRepository(Compte::class)->find($values->Compte);
-                    $idcaissier=$this->getDoctrine()->getRepository(Utilisateur::class)->find($values->Caissier);
+                    $idcompte=$this->getDoctrine()->getRepository(Compte::class)->findByNumeroCompte($values->Compte);
+                    $idcaissier= $this->getUser();
                     if ($idcaissier==NULL || $idcompte==NULL) {
                         $errors[]= "Ce compte ou Partenaire n'exite pas";
                     } else {
-                        $depot->setIdCompte($idcompte);
+                        $depot->setIdCompte($idcompte[0]);
                         $depot->setIdCaissier($idcaissier);
-                        $idcompte->setMontant($idcompte->getMontant()+$values->montant);
+                        $idcompte[0]->setMontant($idcompte[0]->getMontant()+$values->montant);
                     }
                     
             } else {
