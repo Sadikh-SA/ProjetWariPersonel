@@ -149,7 +149,7 @@ class UtilisateurController extends AbstractController
             $values = json_decode($request->getContent());
             $userModif = $entityManager->getRepository(Utilisateur::class)->find($user->getId());
             $idcompte=$userModif->setIdCompte($this->getDoctrine()->getRepository(Compte::class)->find($values->Compte));
-            if ($idcompte->getIdCompte()!=NULL) {
+            if ($idcompte!=NULL) {
                 $userModif->SetIdCompte($idcompte->getIdCompte());
                 $entityManager->flush();
                 $data = [
