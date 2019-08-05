@@ -11,7 +11,5 @@ include_once $this->targetDirs[3].'/vendor/symfony/security-http/Firewall/Legacy
 include_once $this->targetDirs[3].'/vendor/symfony/security-http/Firewall/ChannelListener.php';
 include_once $this->targetDirs[3].'/vendor/symfony/security-http/EntryPoint/AuthenticationEntryPointInterface.php';
 include_once $this->targetDirs[3].'/vendor/symfony/security-http/EntryPoint/RetryAuthenticationEntryPoint.php';
-include_once $this->targetDirs[3].'/vendor/symfony/security-http/AccessMapInterface.php';
-include_once $this->targetDirs[3].'/vendor/symfony/security-http/AccessMap.php';
 
-return $this->privates['security.channel_listener'] = new \Symfony\Component\Security\Http\Firewall\ChannelListener(($this->privates['security.access_map'] ?? ($this->privates['security.access_map'] = new \Symfony\Component\Security\Http\AccessMap())), new \Symfony\Component\Security\Http\EntryPoint\RetryAuthenticationEntryPoint(80, 443), ($this->privates['logger'] ?? ($this->privates['logger'] = new \Symfony\Component\HttpKernel\Log\Logger())));
+return $this->privates['security.channel_listener'] = new \Symfony\Component\Security\Http\Firewall\ChannelListener(($this->privates['security.access_map'] ?? $this->load('getSecurity_AccessMapService.php')), new \Symfony\Component\Security\Http\EntryPoint\RetryAuthenticationEntryPoint(80, 443), ($this->privates['logger'] ?? ($this->privates['logger'] = new \Symfony\Component\HttpKernel\Log\Logger())));

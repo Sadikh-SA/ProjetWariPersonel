@@ -7,7 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\Compte;
 use App\Entity\Partenaire;
 use App\Entity\Depot;
@@ -68,16 +67,26 @@ class CompteDepotController extends AbstractController
     public function inserer(Request $request, EntityManagerInterface $entityManager)
     {
        $values = json_decode($request->getContent());
+       $errors=[];
         if (isset($values->Compte,$values->Caissier,$values->montant)) {
-            if ($values->montant>75000 && is_numeric($values->montant)) {
+            if ($values->montant>=75000 && is_numeric($values->montant)) {
                 $depot = new Depot();
                 $depot ->setDateDeDepot(new \DateTime())
-                    ->setMontantDuDepot($values->montant);
-                    $idcompte=$depot->setIdCompte($this->getDoctrine()->getRepository(Compte::class)->find($values->Compte));
-                    $depot->setIdCompte($idcompte->getIdCompte());
-                    $idcaissier=$depot->setIdCaissier($this->getDoctrine()->getRepository(Utilisateur::class)->find($values->Caissier));
-                    $depot->setIdCaissier($idcaissier->getIdCaissier());
-                    $idcompte->getIdCompte()->setMontant($idcompte->getIdCompte()->getMontant()+$values->montant);
+                       ->setMontantDuDepot($values->montant);
+                    $idcompte=$this->getDoctrine()->getRepository(Compte::class)->find($values->Compte);
+                    $idcaissier=$this->getDoctrine()->getRepository(Utilisateur::class)->find($values->Caissier);
+                    if ($idcaissier==NULL || $idcompte==NULL) {
+                        $errors[]= "Ce compte ou Partenaire n'exite pas";
+                    } else {
+                        $depot->setIdCompte($idcompte);
+                        $depot->setIdCaissier($idcaissier);
+                        $idcompte->setMontant($idcompte->getMontant()+$values->montant);
+                    }
+                    
+            } else {
+                $errors [] = "Le Montant doit être supérieur à 75000";
+            }
+            if (!$errors) {
                 $entityManager->persist($depot);
                 $entityManager->flush();
     
@@ -88,12 +97,11 @@ class CompteDepotController extends AbstractController
     
                 return new JsonResponse($data, 201);
             } else {
-                $data = [
-                    'status1' => 400,
-                    'message1' => 'Le montant doit être positif et Supérieur ou égale à 75000 F cfa'
-                ];
-                return new JsonResponse($data, 400);
+                return $this->json([
+                    'errors' => $errors
+                ], 400);
             }
+            
         }
         else {
             $data = [

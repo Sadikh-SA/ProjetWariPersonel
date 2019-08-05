@@ -70,7 +70,7 @@ class UtilisateurController extends AbstractController
                 $entityManager->persist($compte);
                 $user->setIdCompte($compte);      
             }
-            elseif(strtolower($user->getProfil())==strtolower("Utilisateur") || strtolower($user->getProfil())==strtolower("Caissier") && $idpartenaire->getIdPartenaire()!=NULL) {
+            elseif(strtolower($user->getProfil())==strtolower("Utilisateur") || strtolower($user->getProfil())==strtolower("Caissier") && $idpartenaire!=NULL) {
                 $idpartenaire=$user->setIdPartenaire($this->getDoctrine()->getRepository(Partenaire::class)->find($values->idPartenaire));
                 $user->setIdPartenaire($idpartenaire->getIdPartenaire());
                 if ($user->getProfil()=="Caissier") {
