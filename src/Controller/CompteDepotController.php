@@ -73,6 +73,7 @@ class CompteDepotController extends AbstractController
                 $depot ->setDateDeDepot(new \DateTime())
                        ->setMontantDuDepot($values->montant);
                     $idcompte=$this->getDoctrine()->getRepository(Compte::class)->findByNumeroCompte($values->Compte);
+                    var_dump($idcompte);die();
                     $idcaissier= $this->getUser();
                     if ($idcaissier==NULL || $idcompte==NULL) {
                         $errors[]= "Ce compte ou Partenaire n'exite pas";

@@ -13,6 +13,8 @@ use App\Entity\Utilisateur;
 use App\Entity\Partenaire;
 use App\Entity\Compte;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Flex\Response;
 
 /**
  * @Route("/api")
@@ -30,6 +32,7 @@ class UtilisateurController extends AbstractController
 
     /**
      * @Route("/Partenaire/Utilisateur/inserer", name="inserer_un_partenaire_ou_utilisateur", methods={"POST"})
+     * @IsGranted({"ROLE_Super-Admin", "ROLE_Admin-Partenaire"})
      */
     public function Ajouter_Partenaire_Utilisateur(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
     {
@@ -47,15 +50,16 @@ class UtilisateurController extends AbstractController
             $user->setAdresse(trim($values->adresse));
             $user->setProfil(trim(ucfirst(strtolower($values->profil))));
             $user->setPhoto(trim($values->photo));
+            $role='ROLE_Admin-Partenaire';
             if (isset($values->idCompte)) {
                 $idcompte=$this->getDoctrine()->getRepository(Compte::class)->find($values->idCompte);
             }
             if (strtolower($user->getProfil())==strtolower("Admin-Partenaire") && !isset($values->ninea) && $idcompte!=NULL) {
-                $user->setRoles(['ROLE_Admin-Partenaire']);
+                $user->setRoles([$role]);
                 $user->setIdCompte($idcompte);
                 $user->setIdPartenaire($idcompte->getIdPartenaire());
             }elseif (strtolower($user->getProfil())==strtolower("Admin-Partenaire") && isset($values->ninea) && isset($values->codeBank) && strlen($values->codeBank)==6 && is_numeric($values->codeBank)) {
-                $user->setRoles(['ROLE_Admin-Partenaire']);
+                $user->setRoles([$role]);
                 $partenaire = new Partenaire();
                 $partenaire->setNinea($values->ninea);
                 $partenaire->setLocalisation(trim($values->localisation));
@@ -75,8 +79,18 @@ class UtilisateurController extends AbstractController
                 $user->setIdPartenaire($idcompte->getIdPartenaire());
                 $user->setIdCompte($idcompte);
                 if ($user->getProfil()=="Caissier") {
+                    if ($this->getUser()->getRoles()[0]!='ROLE_Super-Admin') {
+                        return $this->json([
+                            'message' => 'Vous n avez pas d acces pour inscrire un caissier' 
+                        ]);
+                    }
                     $user->setRoles(['ROLE_Caissier']);
                 } else {
+                    if ($this->getUser()->getRoles()[0]!=$role) {
+                        return $this->json([
+                            'message' => 'Vous n avez pas d acces pour inscrire un utilisateur' 
+                        ]);
+                    }
                     $user->setRoles(['ROLE_Utilisateur']);
                 }
             }

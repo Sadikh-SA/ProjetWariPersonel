@@ -1,6 +1,6 @@
 <?php
 
-namespace ContainerSuD0KxB;
+namespace ContainerMx49Yck;
 
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
